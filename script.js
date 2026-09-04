@@ -1,206 +1,194 @@
-const SAVE_KEY = "kyaraez_save";
+const SAVE_KEY = "kyaraez_save_v2";
 
 const gameState = {
-  currentScreen: "loading",
   player: {
     name: "",
     type: "child",
-    gender: "female",
-    skinColor: "#fce2c4",
-    hairColor: "#3b2a1a",
-    hairStyle: "short",
-    clothesColor: "#5d8a4e",
+    style: "adventurer",
+    seed: "kyara",
     money: 1250,
     needs: { energy: 100, hunger: 100, hygiene: 100, mood: 100 }
   },
   time: { hours: 7, minutes: 30, dayIndex: 0 },
-  weather: "cerah"
+  weather: "cerah",
+  location: "home"
 };
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(el => el.classList.add("hidden"));
-  const t = document.getElementById(id);
-  if (t) {
-    t.classList.remove("hidden");
-    gameState.currentScreen = id;
+const LOCATIONS = {
+  home: {
+    title: "Rumah",
+    desc: "Tempat istirahat dan merawat diri.",
+    actions: [
+      { id: "sleep", label: "Tidur", info: "+40 Energi, +10 Mood", fn: doSleep },
+      { id: "eat_home", label: "Makan di rumah", info: "+25 Lapar (gratis)", fn: () => changeNeed("hunger", 25, "Kamu makan bekal di rumah.") },
+      { id: "bath", label: "Mandi", info: "+40 Kebersihan, +5 Mood", fn: doBath }
+    ]
+  },
+  cafe: {
+    title: "Cafe",
+    desc: "Tempat nongkrong biar mood naik.",
+    actions: [
+      { id: "coffee", label: "Beli Kopi (80)", info: "+15 Mood, +5 Energi", fn: () => buyItem(80, () => { changeNeed("mood", 15); changeNeed("energy", 5); }, "Kopi hangat, mood naik.") },
+      { id: "cake", label: "Beli Cake (120)", info: "+20 Lapar, +10 Mood", fn: () => buyItem(120, () => { changeNeed("hunger", 20); changeNeed("mood", 10); }, "Cake-nya enak!") },
+      { id: "chat", label: "Duduk santai", info: "+12 Mood", fn: () => changeNeed("mood", 12, "Kamu duduk santai di cafe.") }
+    ]
+  },
+  market: {
+    title: "Supermarket",
+    desc: "Belanja kebutuhan harian.",
+    actions: [
+      { id: "snack", label: "Beli Snack (60)", info: "+15 Lapar", fn: () => buyItem(60, () => changeNeed("hunger", 15), "Snack berhasil dibeli.") },
+      { id: "meal", label: "Beli Makanan (150)", info: "+35 Lapar, +5 Mood", fn: () => buyItem(150, () => { changeNeed("hunger", 35); changeNeed("mood", 5); }, "Makanan siap saji dibeli.") },
+      { id: "soap", label: "Beli Sabun (90)", info: "+20 Kebersihan", fn: () => buyItem(90, () => changeNeed("hygiene", 20), "Sabun dibeli.") }
+    ]
+  },
+  work: {
+    title: "Tempat Kerja",
+    desc: "Kerja sebentar untuk dapat uang.",
+    actions: [
+      { id: "work1", label: "Kerja Shift Pendek", info: "+200 uang, -15 Energi, -8 Mood", fn: doWork }
+    ]
   }
+};
+
+function avatarUrl(p) {
+  const style = p.style || "adventurer";
+  const seed = encodeURIComponent(p.seed || p.name || "player");
+  return `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}`;
 }
 
-function showToast(msg, dur = 2200) {
-  const toast = document.getElementById("toast");
-  toast.textContent = msg;
-  toast.classList.remove("hidden");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => toast.classList.add("hidden"), dur);
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.add("hidden"), 2200);
+}
+
+function clamp(n) {
+  return Math.max(0, Math.min(100, n));
+}
+
+function changeNeed(key, amount, msg) {
+  gameState.player.needs[key] = clamp(gameState.player.needs[key] + amount);
+  updateHUD();
+  if (msg) showToast(msg);
+}
+
+function buyItem(price, effect, msg) {
+  if (gameState.player.money < price) {
+    showToast("Uang tidak cukup!");
+    return;
+  }
+  gameState.player.money -= price;
+  effect();
+  updateHUD();
+  showToast(msg);
+}
+
+function doSleep() {
+  changeNeed("energy", 40);
+  changeNeed("mood", 10);
+  advanceTime(60);
+  showToast("Kamu tidur sebentar. Segar!");
+  updateHUD();
+}
+
+function doBath() {
+  changeNeed("hygiene", 40);
+  changeNeed("mood", 5);
+  advanceTime(20);
+  showToast("Mandi selesai. Segar!");
+  updateHUD();
+}
+
+function doWork() {
+  if (gameState.player.needs.energy < 15) {
+    showToast("Terlalu lelah untuk bekerja!");
+    return;
+  }
+  gameState.player.money += 200;
+  changeNeed("energy", -15);
+  changeNeed("mood", -8);
+  advanceTime(90);
+  showToast("Kerja selesai! +200");
+  updateHUD();
 }
 
 function saveGame() {
-  try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify({
-      player: gameState.player,
-      time: gameState.time,
-      weather: gameState.weather,
-      savedAt: new Date().toISOString()
-    }));
-    showToast("Game berhasil disimpan! 💾");
-    return true;
-  } catch (e) {
-    showToast("Gagal menyimpan");
-    return false;
-  }
+  localStorage.setItem(SAVE_KEY, JSON.stringify({
+    player: gameState.player,
+    time: gameState.time,
+    weather: gameState.weather,
+    location: gameState.location
+  }));
+  showToast("Progress disimpan 💾");
 }
 
 function loadGame() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return false;
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return false;
     const data = JSON.parse(raw);
-    if (!data.player || !data.time) return false;
     gameState.player = { ...gameState.player, ...data.player };
     gameState.time = { ...gameState.time, ...data.time };
     gameState.weather = data.weather || "cerah";
+    gameState.location = data.location || "home";
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
 
-function hasSaveData() {
-  return !!localStorage.getItem(SAVE_KEY);
-}
-
-function applyChibi(prefix, p) {
-  const head = document.getElementById(prefix + "-head") || document.getElementById(prefix === "p" ? "p-head" : "w-head");
-  const hair = document.getElementById(prefix + "-hair") || document.getElementById(prefix === "p" ? "p-hair" : "w-hair");
-  const body = document.getElementById(prefix + "-body") || document.getElementById(prefix === "p" ? "p-body" : "w-body");
-
-  if (head) head.style.background = p.skinColor;
-  if (body) body.style.background = p.clothesColor;
-  if (hair) {
-    hair.style.background = p.hairColor;
-    if (p.hairStyle === "long") {
-      hair.style.height = "68px";
-      hair.style.borderRadius = "50% 50% 25% 25%";
-    } else if (p.hairStyle === "curly") {
-      hair.style.height = "52px";
-      hair.style.borderRadius = "45%";
-    } else if (p.hairStyle === "ponytail") {
-      hair.style.height = "44px";
-      hair.style.borderRadius = "50% 50% 12% 12%";
-    } else {
-      hair.style.height = "48px";
-      hair.style.borderRadius = "50% 50% 20% 20%";
-    }
-  }
-}
-
-function updateCharacterPreview() {
+function updateAvatarPreview() {
   const p = gameState.player;
-  applyChibi("p", p);
-  const nameEl = document.getElementById("preview-name");
-  if (nameEl) nameEl.textContent = p.name || "Namamu";
+  const url = avatarUrl(p);
+  document.getElementById("avatar-preview").src = url;
+  document.getElementById("preview-name").textContent = p.name || "Namamu";
 }
 
-function setupCharacterCreator() {
-  document.getElementById("input-name").addEventListener("input", e => {
-    gameState.player.name = e.target.value.trim();
-    updateCharacterPreview();
+function applyPlayerAvatar() {
+  const p = gameState.player;
+  document.getElementById("player-avatar").src = avatarUrl(p);
+  document.getElementById("player-label").textContent = p.name || "Player";
+}
+
+function renderLocation() {
+  const loc = LOCATIONS[gameState.location];
+  document.getElementById("location-title").textContent = loc.title;
+  document.getElementById("location-desc").textContent = loc.desc;
+
+  document.querySelectorAll(".loc-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.loc === gameState.location);
   });
 
-  document.querySelectorAll("[data-type]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-type]").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.type = btn.dataset.type;
-    });
-  });
-
-  document.querySelectorAll("[data-gender]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-gender]").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.gender = btn.dataset.gender;
-    });
-  });
-
-  document.querySelectorAll("#skin-colors .color-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#skin-colors .color-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.skinColor = btn.dataset.color;
-      updateCharacterPreview();
-    });
-  });
-
-  document.querySelectorAll("#hair-colors .color-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#hair-colors .color-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.hairColor = btn.dataset.color;
-      updateCharacterPreview();
-    });
-  });
-
-  document.querySelectorAll("[data-hair]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-hair]").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.hairStyle = btn.dataset.hair;
-      updateCharacterPreview();
-    });
-  });
-
-  document.querySelectorAll("#clothes-colors .color-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#clothes-colors .color-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      gameState.player.clothesColor = btn.dataset.color;
-      updateCharacterPreview();
-    });
-  });
-
-  document.getElementById("btn-finish-creator").addEventListener("click", () => {
-    if (!gameState.player.name) {
-      showToast("Isi nama karakter dulu ya!");
-      document.getElementById("input-name").focus();
-      return;
-    }
-    gameState.player.needs = { energy: 100, hunger: 100, hygiene: 100, mood: 100 };
-    gameState.player.money = 1250;
-    gameState.time = { hours: 7, minutes: 30, dayIndex: 0 };
-    gameState.weather = "cerah";
-    saveGame();
-    enterGameWorld();
-  });
-
-  document.getElementById("btn-cancel-creator").addEventListener("click", () => {
-    showScreen("main-menu");
+  const list = document.getElementById("action-list");
+  list.innerHTML = "";
+  loc.actions.forEach(a => {
+    const btn = document.createElement("button");
+    btn.className = "action-btn";
+    btn.innerHTML = `${a.label}<small>${a.info}</small>`;
+    btn.onclick = () => {
+      a.fn();
+      saveGame();
+    };
+    list.appendChild(btn);
   });
 }
 
-function enterGameWorld() {
-  showScreen("game-world");
-  applyChibi("w", gameState.player);
-  updateHUD();
-  startGameLoop();
-  const name = gameState.player.name || "Player";
-  document.getElementById("world-greeting").textContent = `Kamar Tidur • ${name}`;
+function formatTime(h, m) {
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
-let gameLoopInterval = null;
-
-function startGameLoop() {
-  if (gameLoopInterval) clearInterval(gameLoopInterval);
-  gameLoopInterval = setInterval(() => {
-    advanceTime(1);
-    updateHUD();
-  }, 1000);
-}
-
-function advanceTime(min) {
-  gameState.time.minutes += min;
+function advanceTime(mins) {
+  gameState.time.minutes += mins;
   while (gameState.time.minutes >= 60) {
     gameState.time.minutes -= 60;
     gameState.time.hours += 1;
@@ -211,95 +199,141 @@ function advanceTime(min) {
   }
 }
 
-function formatTime(h, m) {
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-}
-
 function updateHUD() {
   document.getElementById("game-time").textContent = formatTime(gameState.time.hours, gameState.time.minutes);
   document.getElementById("game-day").textContent = DAYS[gameState.time.dayIndex];
-
-  const map = {
-    cerah: { icon: "☀️", text: "Cerah" },
-    berawan: { icon: "⛅", text: "Berawan" },
-    hujan: { icon: "🌧️", text: "Hujan" },
-    "hujan-lebat": { icon: "⛈️", text: "Hujan Lebat" },
-    mendung: { icon: "☁️", text: "Mendung" }
-  };
-  const w = map[gameState.weather] || map.cerah;
-  document.getElementById("weather-icon").textContent = w.icon;
-  document.getElementById("weather-text").textContent = w.text;
-
-  const n = gameState.player.needs;
-  document.getElementById("need-energy").textContent = n.energy;
-  document.getElementById("need-hunger").textContent = n.hunger;
-  document.getElementById("need-hygiene").textContent = n.hygiene;
-  document.getElementById("need-mood").textContent = n.mood;
+  document.getElementById("need-energy").textContent = Math.round(gameState.player.needs.energy);
+  document.getElementById("need-hunger").textContent = Math.round(gameState.player.needs.hunger);
+  document.getElementById("need-hygiene").textContent = Math.round(gameState.player.needs.hygiene);
+  document.getElementById("need-mood").textContent = Math.round(gameState.player.needs.mood);
   document.getElementById("player-money").textContent = gameState.player.money.toLocaleString("id-ID");
 }
 
-function setupMenuButtons() {
-  document.getElementById("btn-new-game").addEventListener("click", () => {
-    gameState.player.name = "";
-    gameState.player.type = "child";
-    gameState.player.gender = "female";
-    gameState.player.skinColor = "#fce2c4";
-    gameState.player.hairColor = "#3b2a1a";
-    gameState.player.hairStyle = "short";
-    gameState.player.clothesColor = "#5d8a4e";
+let loop = null;
+function startLoop() {
+  if (loop) clearInterval(loop);
+  loop = setInterval(() => {
+    advanceTime(1);
+    // needs turun pelan
+    gameState.player.needs.energy = clamp(gameState.player.needs.energy - 0.15);
+    gameState.player.needs.hunger = clamp(gameState.player.needs.hunger - 0.22);
+    gameState.player.needs.hygiene = clamp(gameState.player.needs.hygiene - 0.1);
+    gameState.player.needs.mood = clamp(gameState.player.needs.mood - 0.08);
+    updateHUD();
+  }, 1000);
+}
 
-    document.getElementById("input-name").value = "";
-    document.querySelectorAll("[data-type]").forEach(b => b.classList.remove("active"));
-    document.querySelector('[data-type="child"]').classList.add("active");
-    document.querySelectorAll("[data-gender]").forEach(b => b.classList.remove("active"));
-    document.querySelector('[data-gender="female"]').classList.add("active");
+function enterGame() {
+  showScreen("game-world");
+  applyPlayerAvatar();
+  renderLocation();
+  updateHUD();
+  startLoop();
+}
 
-    updateCharacterPreview();
-    showScreen("character-creator");
+function setupCreator() {
+  const nameInput = document.getElementById("input-name");
+  const seedInput = document.getElementById("input-seed");
+
+  nameInput.addEventListener("input", () => {
+    gameState.player.name = nameInput.value.trim();
+    if (!seedInput.value) gameState.player.seed = gameState.player.name || "kyara";
+    updateAvatarPreview();
   });
 
-  document.getElementById("btn-continue").addEventListener("click", () => {
-    if (!hasSaveData()) {
-      showToast("Belum ada data tersimpan");
+  seedInput.addEventListener("input", () => {
+    gameState.player.seed = seedInput.value.trim() || gameState.player.name || "kyara";
+    updateAvatarPreview();
+  });
+
+  document.getElementById("btn-random-seed").onclick = () => {
+    gameState.player.seed = Math.random().toString(36).slice(2, 8);
+    seedInput.value = gameState.player.seed;
+    updateAvatarPreview();
+  };
+
+  document.querySelectorAll("[data-type]").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll("[data-type]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      gameState.player.type = btn.dataset.type;
+    };
+  });
+
+  document.querySelectorAll("[data-style]").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll("[data-style]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      gameState.player.style = btn.dataset.style;
+      updateAvatarPreview();
+    };
+  });
+
+  document.getElementById("btn-finish-creator").onclick = () => {
+    if (!gameState.player.name) {
+      showToast("Isi nama dulu!");
+      return;
+    }
+    if (!gameState.player.seed) gameState.player.seed = gameState.player.name;
+    gameState.player.money = 1250;
+    gameState.player.needs = { energy: 100, hunger: 100, hygiene: 100, mood: 100 };
+    gameState.time = { hours: 7, minutes: 30, dayIndex: 0 };
+    gameState.location = "home";
+    saveGame();
+    enterGame();
+  };
+
+  document.getElementById("btn-cancel-creator").onclick = () => showScreen("main-menu");
+}
+
+function setupMenu() {
+  document.getElementById("btn-new-game").onclick = () => {
+    gameState.player.name = "";
+    gameState.player.style = "adventurer";
+    gameState.player.seed = "kyara";
+    document.getElementById("input-name").value = "";
+    document.getElementById("input-seed").value = "kyara";
+    updateAvatarPreview();
+    showScreen("character-creator");
+  };
+
+  document.getElementById("btn-continue").onclick = () => {
+    if (!localStorage.getItem(SAVE_KEY)) {
+      showToast("Belum ada save");
       return;
     }
     if (loadGame()) {
-      showToast("Game berhasil dilanjutkan!");
-      enterGameWorld();
-    } else {
-      showToast("Data save rusak");
-    }
-  });
+      showToast("Game dilanjutkan");
+      enterGame();
+    } else showToast("Save rusak");
+  };
 
-  document.getElementById("btn-multiplayer").addEventListener("click", () => {
-    showToast("Multiplayer masih dalam pengembangan");
-  });
-
-  document.getElementById("btn-settings").addEventListener("click", () => {
-    showToast("Pengaturan masih dalam pengembangan");
-  });
-
-  document.getElementById("btn-save").addEventListener("click", () => saveGame());
-
-  document.getElementById("btn-menu").addEventListener("click", () => {
-    if (confirm("Kembali ke Main Menu?\n(Progress otomatis disimpan)")) {
+  document.getElementById("btn-multiplayer").onclick = () => showToast("Multiplayer belum tersedia");
+  document.getElementById("btn-settings").onclick = () => showToast("Pengaturan belum tersedia");
+  document.getElementById("btn-save").onclick = saveGame;
+  document.getElementById("btn-menu").onclick = () => {
+    if (confirm("Kembali ke menu? Progress disimpan.")) {
       saveGame();
-      if (gameLoopInterval) clearInterval(gameLoopInterval);
+      if (loop) clearInterval(loop);
       showScreen("main-menu");
     }
-  });
-}
+  };
 
-function startLoading() {
-  setTimeout(() => {
-    document.getElementById("loading-screen").classList.add("hidden");
-    showScreen("main-menu");
-  }, 1100);
+  document.querySelectorAll(".loc-btn").forEach(btn => {
+    btn.onclick = () => {
+      gameState.location = btn.dataset.loc;
+      renderLocation();
+      saveGame();
+    };
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupMenuButtons();
-  setupCharacterCreator();
-  updateCharacterPreview();
-  startLoading();
+  setupMenu();
+  setupCreator();
+  updateAvatarPreview();
+  setTimeout(() => {
+    document.getElementById("loading-screen").classList.add("hidden");
+    showScreen("main-menu");
+  }, 900);
 });
