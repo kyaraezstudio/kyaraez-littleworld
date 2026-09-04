@@ -1,6 +1,5 @@
 /* ======================
    KYARAEZ: Little World
-   Base Styles
 ====================== */
 
 :root {
@@ -30,10 +29,6 @@ body {
   overflow: hidden;
 }
 
-/* ======================
-   Utility
-====================== */
-
 .hidden {
   display: none !important;
 }
@@ -46,10 +41,7 @@ body {
   justify-content: center;
 }
 
-/* ======================
-   Loading Screen
-====================== */
-
+/* Loading */
 #loading-screen {
   background: linear-gradient(135deg, #ffe5ec, #f8edeb);
   z-index: 100;
@@ -87,10 +79,7 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* ======================
-   Main Menu
-====================== */
-
+/* Main Menu */
 #main-menu {
   background: linear-gradient(160deg, #fff0f3 0%, #f0f7ff 100%);
 }
@@ -123,10 +112,7 @@ body {
   margin: 0 auto;
 }
 
-/* ======================
-   Buttons
-====================== */
-
+/* Buttons */
 .btn {
   padding: 14px 28px;
   border: none;
@@ -143,10 +129,6 @@ body {
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-}
-
-.btn:active {
-  transform: translateY(0);
 }
 
 .btn.primary {
@@ -173,34 +155,202 @@ body {
   font-size: 1.2rem;
   cursor: pointer;
   box-shadow: var(--shadow);
+  transition: transform 0.15s;
 }
 
-/* ======================
-   Character Creator
-====================== */
+.btn-icon:hover {
+  transform: scale(1.08);
+}
 
+/* Character Creator */
 #character-creator {
-  background: #fff9fb;
+  background: linear-gradient(160deg, #fff5f7 0%, #f0f9ff 100%);
+  padding: 20px;
+  overflow-y: auto;
 }
 
-.creator-container {
-  background: var(--card);
-  padding: 40px;
-  border-radius: var(--radius);
+.creator-wrapper {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  max-width: 900px;
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
   box-shadow: var(--shadow);
+}
+
+.creator-preview {
+  flex-shrink: 0;
+  width: 220px;
   text-align: center;
-  min-width: 320px;
 }
 
-.placeholder-text {
+.character-preview {
+  width: 180px;
+  height: 220px;
+  margin: 0 auto 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.char-hair {
+  width: 90px;
+  height: 50px;
+  background: #2c1a0e;
+  border-radius: 50% 50% 20% 20%;
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+}
+
+.char-face {
+  width: 80px;
+  height: 80px;
+  background: #fce2c4;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.char-eyes {
+  display: flex;
+  gap: 18px;
+}
+
+.char-eyes::before,
+.char-eyes::after {
+  content: "";
+  width: 10px;
+  height: 12px;
+  background: #333;
+  border-radius: 50%;
+}
+
+.char-mouth {
+  width: 16px;
+  height: 8px;
+  border-bottom: 3px solid #e07a5f;
+  border-radius: 0 0 50% 50%;
+}
+
+.char-body {
+  width: 70px;
+  height: 60px;
+  background: #ff8fab;
+  border-radius: 20px 20px 12px 12px;
+  margin-top: -8px;
+}
+
+.preview-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.creator-panel {
+  flex: 1;
+}
+
+.creator-panel h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
   color: var(--text-light);
-  margin: 24px 0;
 }
 
-/* ======================
-   Game World + HUD
-====================== */
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ffe0e9;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+}
 
+.form-group input[type="text"]:focus {
+  border-color: var(--primary);
+}
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.option-btn {
+  padding: 8px 16px;
+  border: 2px solid #ffe0e9;
+  background: white;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.option-btn:hover {
+  border-color: var(--primary);
+}
+
+.option-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.color-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.active {
+  border-color: var(--text);
+  transform: scale(1.1);
+}
+
+.creator-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.creator-actions .btn {
+  flex: 1;
+}
+
+/* Game World */
 #game-world {
   flex-direction: column;
   background: #e8f4f8;
@@ -271,11 +421,88 @@ body {
   justify-content: center;
 }
 
-/* ======================
-   Responsive
-====================== */
+.world-placeholder {
+  text-align: center;
+}
 
-@media (max-width: 600px) {
+.mini-character {
+  width: 120px;
+  height: 150px;
+  margin: 0 auto 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.mini-character .char-hair {
+  width: 70px;
+  height: 40px;
+  top: 5px;
+}
+
+.mini-character .char-face {
+  width: 60px;
+  height: 60px;
+}
+
+.mini-character .char-eyes::before,
+.mini-character .char-eyes::after {
+  width: 8px;
+  height: 10px;
+}
+
+.mini-character .char-body {
+  width: 55px;
+  height: 45px;
+}
+
+#world-greeting {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hint {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  z-index: 200;
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .creator-wrapper {
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+  }
+
   .game-title {
     font-size: 2.4rem;
   }
