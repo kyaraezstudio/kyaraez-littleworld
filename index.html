@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KYARAEZ: Little World</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-content">
+      <h1>KYARAEZ</h1>
+      <p>Little World</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <!-- Main Menu -->
+  <div id="main-menu" class="screen hidden">
+    <div class="menu-container">
+      <h1 class="game-title">KYARAEZ</h1>
+      <p class="game-subtitle">Little World</p>
+
+      <div class="menu-buttons">
+        <button id="btn-new-game" class="btn primary">Mulai Baru</button>
+        <button id="btn-continue" class="btn">Lanjutkan</button>
+        <button id="btn-multiplayer" class="btn">Multiplayer (Room)</button>
+        <button id="btn-settings" class="btn secondary">Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Character Creator (placeholder) -->
+  <div id="character-creator" class="screen hidden">
+    <div class="creator-container">
+      <h2>Buat Karaktermu</h2>
+      <p class="placeholder-text">Character Creator akan muncul di sini</p>
+      <button id="btn-finish-creator" class="btn primary">Selesai</button>
+    </div>
+  </div>
+
+  <!-- Game World (placeholder) -->
+  <div id="game-world" class="screen hidden">
+    <div class="hud">
+      <div class="hud-left">
+        <div class="time-display">
+          <span id="game-time">07:30</span>
+          <span id="game-day">Senin</span>
+        </div>
+        <div class="weather-display">
+          <span id="weather-icon">☀️</span>
+          <span id="weather-text">Cerah</span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div class="needs">
+          <div class="need" title="Energi">⚡ <span id="need-energy">100</span></div>
+          <div class="need" title="Lapar">🍞 <span id="need-hunger">100</span></div>
+          <div class="need" title="Kebersihan">🛁 <span id="need-hygiene">100</span></div>
+          <div class="need" title="Mood">😊 <span id="need-mood">100</span></div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="money-display">
+          💰 <span id="player-money">1.250</span>
+        </div>
+        <button id="btn-menu" class="btn-icon">☰</button>
+      </div>
+    </div>
+
+    <div id="world-container">
+      <p class="placeholder-text">World / Rumah akan muncul di sini</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>
