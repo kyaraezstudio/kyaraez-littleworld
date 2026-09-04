@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- Loading -->
   <div id="loading-screen">
     <div class="loading-content">
       <h1>KYARAEZ</h1>
@@ -17,7 +16,7 @@
     </div>
   </div>
 
-  <!-- Main Menu -->
+  <!-- MAIN MENU -->
   <div id="main-menu" class="screen hidden">
     <div class="menu-container">
       <h1 class="game-title">KYARAEZ</h1>
@@ -31,32 +30,19 @@
     </div>
   </div>
 
-  <!-- Character Creator -->
+  <!-- CHARACTER CREATOR -->
   <div id="character-creator" class="screen hidden">
-    <div class="creator-wrapper">
-      <div class="creator-preview">
-        <div class="chibi" id="preview-chibi">
-          <div class="chibi-hair" id="p-hair"></div>
-          <div class="chibi-head" id="p-head">
-            <div class="chibi-eye left"></div>
-            <div class="chibi-eye right"></div>
-            <div class="chibi-blush left"></div>
-            <div class="chibi-blush right"></div>
-            <div class="chibi-mouth"></div>
-          </div>
-          <div class="chibi-body" id="p-body"></div>
-          <div class="chibi-leg left"></div>
-          <div class="chibi-leg right"></div>
-        </div>
-        <p class="preview-name" id="preview-name">Namamu</p>
+    <div class="creator-card">
+      <div class="creator-left">
+        <img id="avatar-preview" class="avatar-big" src="" alt="avatar" />
+        <p id="preview-name" class="preview-name">Namamu</p>
       </div>
-
-      <div class="creator-panel">
-        <h2>Buat Karaktermu</h2>
+      <div class="creator-right">
+        <h2>Buat Karakter</h2>
 
         <div class="form-group">
           <label>Nama</label>
-          <input type="text" id="input-name" placeholder="Masukkan nama..." maxlength="16" />
+          <input type="text" id="input-name" maxlength="16" placeholder="Ketik nama..." />
         </div>
 
         <div class="form-group">
@@ -68,55 +54,20 @@
         </div>
 
         <div class="form-group">
-          <label>Gender</label>
+          <label>Style Avatar</label>
           <div class="option-row">
-            <button class="option-btn active" data-gender="female">Perempuan</button>
-            <button class="option-btn" data-gender="male">Laki-laki</button>
+            <button class="option-btn active" data-style="adventurer">Adventurer</button>
+            <button class="option-btn" data-style="lorelei">Lorelei</button>
+            <button class="option-btn" data-style="avataaars">Avataaars</button>
+            <button class="option-btn" data-style="big-smile">Big Smile</button>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Warna Kulit</label>
-          <div class="color-row" id="skin-colors">
-            <button class="color-btn active" data-color="#fce2c4" style="background:#fce2c4"></button>
-            <button class="color-btn" data-color="#f5cba7" style="background:#f5cba7"></button>
-            <button class="color-btn" data-color="#e0ac69" style="background:#e0ac69"></button>
-            <button class="color-btn" data-color="#c68642" style="background:#c68642"></button>
-            <button class="color-btn" data-color="#8d5524" style="background:#8d5524"></button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Warna Rambut</label>
-          <div class="color-row" id="hair-colors">
-            <button class="color-btn active" data-color="#3b2a1a" style="background:#3b2a1a"></button>
-            <button class="color-btn" data-color="#6b3a2a" style="background:#6b3a2a"></button>
-            <button class="color-btn" data-color="#d4a017" style="background:#d4a017"></button>
-            <button class="color-btn" data-color="#2f4f2f" style="background:#2f4f2f"></button>
-            <button class="color-btn" data-color="#4a3728" style="background:#4a3728"></button>
-            <button class="color-btn" data-color="#1a1a1a" style="background:#1a1a1a"></button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Gaya Rambut</label>
-          <div class="option-row">
-            <button class="option-btn active" data-hair="short">Pendek</button>
-            <button class="option-btn" data-hair="long">Panjang</button>
-            <button class="option-btn" data-hair="curly">Keriting</button>
-            <button class="option-btn" data-hair="ponytail">Kuncir</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Warna Baju</label>
-          <div class="color-row" id="clothes-colors">
-            <button class="color-btn active" data-color="#5d8a4e" style="background:#5d8a4e"></button>
-            <button class="color-btn" data-color="#8b5e3c" style="background:#8b5e3c"></button>
-            <button class="color-btn" data-color="#c4a484" style="background:#c4a484"></button>
-            <button class="color-btn" data-color="#7a9e7e" style="background:#7a9e7e"></button>
-            <button class="color-btn" data-color="#a67c52" style="background:#a67c52"></button>
-            <button class="color-btn" data-color="#4a7043" style="background:#4a7043"></button>
+          <label>Seed (ubah wajah)</label>
+          <div class="seed-row">
+            <input type="text" id="input-seed" placeholder="bebas, contoh: kyara" />
+            <button id="btn-random-seed" class="btn small">Random</button>
           </div>
         </div>
 
@@ -128,61 +79,53 @@
     </div>
   </div>
 
-  <!-- Game World -->
+  <!-- GAME -->
   <div id="game-world" class="screen hidden">
     <div class="hud">
       <div class="hud-left">
-        <div class="time-display">
+        <div class="time-box">
           <span id="game-time">07:30</span>
           <span id="game-day">Senin</span>
         </div>
-        <div class="weather-display">
+        <div class="weather-box">
           <span id="weather-icon">☀️</span>
           <span id="weather-text">Cerah</span>
         </div>
       </div>
+
       <div class="hud-center">
-        <div class="needs">
-          <div class="need">⚡ <span id="need-energy">100</span></div>
-          <div class="need">🍞 <span id="need-hunger">100</span></div>
-          <div class="need">🛁 <span id="need-hygiene">100</span></div>
-          <div class="need">😊 <span id="need-mood">100</span></div>
-        </div>
+        <div class="need-item">⚡ <span id="need-energy">100</span></div>
+        <div class="need-item">🍞 <span id="need-hunger">100</span></div>
+        <div class="need-item">🛁 <span id="need-hygiene">100</span></div>
+        <div class="need-item">😊 <span id="need-mood">100</span></div>
       </div>
+
       <div class="hud-right">
-        <div class="money-display">💰 <span id="player-money">1.250</span></div>
+        <div class="money-box">💰 <span id="player-money">1250</span></div>
         <button id="btn-save" class="btn-icon">💾</button>
         <button id="btn-menu" class="btn-icon">☰</button>
       </div>
     </div>
 
-    <!-- Simple Room -->
-    <div id="world-container">
-      <div class="room">
-        <div class="room-wall"></div>
-        <div class="room-floor"></div>
+    <div class="game-body">
+      <div class="location-tabs">
+        <button class="loc-btn active" data-loc="home">🏠 Rumah</button>
+        <button class="loc-btn" data-loc="cafe">☕ Cafe</button>
+        <button class="loc-btn" data-loc="market">🛒 Supermarket</button>
+        <button class="loc-btn" data-loc="work">💼 Kerja</button>
+      </div>
 
-        <!-- Furniture sederhana -->
-        <div class="furn bed"></div>
-        <div class="furn window"></div>
-        <div class="furn plant"></div>
-
-        <!-- Karakter di kamar -->
-        <div class="chibi in-room" id="world-chibi">
-          <div class="chibi-hair" id="w-hair"></div>
-          <div class="chibi-head" id="w-head">
-            <div class="chibi-eye left"></div>
-            <div class="chibi-eye right"></div>
-            <div class="chibi-blush left"></div>
-            <div class="chibi-blush right"></div>
-            <div class="chibi-mouth"></div>
-          </div>
-          <div class="chibi-body" id="w-body"></div>
-          <div class="chibi-leg left"></div>
-          <div class="chibi-leg right"></div>
+      <div class="scene">
+        <div class="scene-left">
+          <img id="player-avatar" class="avatar-mid" src="" alt="player" />
+          <p id="player-label" class="player-label">Player</p>
+          <p id="location-desc" class="location-desc">Kamu di rumah.</p>
         </div>
 
-        <div class="room-label" id="world-greeting">Kamar Tidur</div>
+        <div class="scene-right">
+          <h3 id="location-title">Rumah</h3>
+          <div id="action-list" class="action-list"></div>
+        </div>
       </div>
     </div>
   </div>
