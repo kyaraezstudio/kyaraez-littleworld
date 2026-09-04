@@ -7,59 +7,47 @@ const gameState = {
     type: "child",
     gender: "female",
     skinColor: "#fce2c4",
-    hairColor: "#2c1a0e",
+    hairColor: "#3b2a1a",
     hairStyle: "short",
-    clothesColor: "#ff8fab",
+    clothesColor: "#5d8a4e",
     money: 1250,
-    needs: {
-      energy: 100,
-      hunger: 100,
-      hygiene: 100,
-      mood: 100
-    }
+    needs: { energy: 100, hunger: 100, hygiene: 100, mood: 100 }
   },
-  time: {
-    hours: 7,
-    minutes: 30,
-    dayIndex: 0
-  },
+  time: { hours: 7, minutes: 30, dayIndex: 0 },
   weather: "cerah"
 };
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 
-function showScreen(screenId) {
+function showScreen(id) {
   document.querySelectorAll(".screen").forEach(el => el.classList.add("hidden"));
-  const target = document.getElementById(screenId);
-  if (target) {
-    target.classList.remove("hidden");
-    gameState.currentScreen = screenId;
+  const t = document.getElementById(id);
+  if (t) {
+    t.classList.remove("hidden");
+    gameState.currentScreen = id;
   }
 }
 
-function showToast(message, duration = 2200) {
+function showToast(msg, dur = 2200) {
   const toast = document.getElementById("toast");
-  toast.textContent = message;
+  toast.textContent = msg;
   toast.classList.remove("hidden");
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => {
-    toast.classList.add("hidden");
-  }, duration);
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.add("hidden"), dur);
 }
 
 function saveGame() {
   try {
-    const data = {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
       player: gameState.player,
       time: gameState.time,
       weather: gameState.weather,
       savedAt: new Date().toISOString()
-    };
-    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    }));
     showToast("Game berhasil disimpan! 💾");
     return true;
   } catch (e) {
-    showToast("Gagal menyimpan game");
+    showToast("Gagal menyimpan");
     return false;
   }
 }
@@ -83,36 +71,40 @@ function hasSaveData() {
   return !!localStorage.getItem(SAVE_KEY);
 }
 
-function updateCharacterPreview() {
-  const p = gameState.player;
-  const face = document.getElementById("preview-face");
-  const hair = document.getElementById("preview-hair");
-  const body = document.getElementById("preview-body");
-  const nameEl = document.getElementById("preview-name");
+function applyChibi(prefix, p) {
+  const head = document.getElementById(prefix + "-head") || document.getElementById(prefix === "p" ? "p-head" : "w-head");
+  const hair = document.getElementById(prefix + "-hair") || document.getElementById(prefix === "p" ? "p-hair" : "w-hair");
+  const body = document.getElementById(prefix + "-body") || document.getElementById(prefix === "p" ? "p-body" : "w-body");
 
-  if (face) face.style.background = p.skinColor;
+  if (head) head.style.background = p.skinColor;
+  if (body) body.style.background = p.clothesColor;
   if (hair) {
     hair.style.background = p.hairColor;
     if (p.hairStyle === "long") {
-      hair.style.height = "70px";
-      hair.style.borderRadius = "50% 50% 30% 30%";
+      hair.style.height = "68px";
+      hair.style.borderRadius = "50% 50% 25% 25%";
     } else if (p.hairStyle === "curly") {
-      hair.style.height = "55px";
-      hair.style.borderRadius = "40%";
+      hair.style.height = "52px";
+      hair.style.borderRadius = "45%";
     } else if (p.hairStyle === "ponytail") {
-      hair.style.height = "45px";
-      hair.style.borderRadius = "50% 50% 10% 10%";
+      hair.style.height = "44px";
+      hair.style.borderRadius = "50% 50% 12% 12%";
     } else {
-      hair.style.height = "50px";
+      hair.style.height = "48px";
       hair.style.borderRadius = "50% 50% 20% 20%";
     }
   }
-  if (body) body.style.background = p.clothesColor;
+}
+
+function updateCharacterPreview() {
+  const p = gameState.player;
+  applyChibi("p", p);
+  const nameEl = document.getElementById("preview-name");
   if (nameEl) nameEl.textContent = p.name || "Namamu";
 }
 
 function setupCharacterCreator() {
-  document.getElementById("input-name").addEventListener("input", (e) => {
+  document.getElementById("input-name").addEventListener("input", e => {
     gameState.player.name = e.target.value.trim();
     updateCharacterPreview();
   });
@@ -175,12 +167,10 @@ function setupCharacterCreator() {
       document.getElementById("input-name").focus();
       return;
     }
-
     gameState.player.needs = { energy: 100, hunger: 100, hygiene: 100, mood: 100 };
     gameState.player.money = 1250;
     gameState.time = { hours: 7, minutes: 30, dayIndex: 0 };
     gameState.weather = "cerah";
-
     saveGame();
     enterGameWorld();
   });
@@ -192,27 +182,11 @@ function setupCharacterCreator() {
 
 function enterGameWorld() {
   showScreen("game-world");
-  applyCharacterToWorld();
+  applyChibi("w", gameState.player);
   updateHUD();
   startGameLoop();
-
   const name = gameState.player.name || "Player";
-  document.getElementById("world-greeting").textContent =
-    `Halo, ${name}! Selamat datang di Little World ☀️`;
-}
-
-function applyCharacterToWorld() {
-  const p = gameState.player;
-  const char = document.getElementById("world-character");
-  if (!char) return;
-
-  const face = char.querySelector(".char-face");
-  const hair = char.querySelector(".char-hair");
-  const body = char.querySelector(".char-body");
-
-  if (face) face.style.background = p.skinColor;
-  if (hair) hair.style.background = p.hairColor;
-  if (body) body.style.background = p.clothesColor;
+  document.getElementById("world-greeting").textContent = `Kamar Tidur • ${name}`;
 }
 
 let gameLoopInterval = null;
@@ -225,8 +199,8 @@ function startGameLoop() {
   }, 1000);
 }
 
-function advanceTime(minutes) {
-  gameState.time.minutes += minutes;
+function advanceTime(min) {
+  gameState.time.minutes += min;
   while (gameState.time.minutes >= 60) {
     gameState.time.minutes -= 60;
     gameState.time.hours += 1;
@@ -242,20 +216,17 @@ function formatTime(h, m) {
 }
 
 function updateHUD() {
-  document.getElementById("game-time").textContent = formatTime(
-    gameState.time.hours,
-    gameState.time.minutes
-  );
+  document.getElementById("game-time").textContent = formatTime(gameState.time.hours, gameState.time.minutes);
   document.getElementById("game-day").textContent = DAYS[gameState.time.dayIndex];
 
-  const weatherMap = {
+  const map = {
     cerah: { icon: "☀️", text: "Cerah" },
     berawan: { icon: "⛅", text: "Berawan" },
     hujan: { icon: "🌧️", text: "Hujan" },
     "hujan-lebat": { icon: "⛈️", text: "Hujan Lebat" },
     mendung: { icon: "☁️", text: "Mendung" }
   };
-  const w = weatherMap[gameState.weather] || weatherMap.cerah;
+  const w = map[gameState.weather] || map.cerah;
   document.getElementById("weather-icon").textContent = w.icon;
   document.getElementById("weather-text").textContent = w.text;
 
@@ -264,8 +235,7 @@ function updateHUD() {
   document.getElementById("need-hunger").textContent = n.hunger;
   document.getElementById("need-hygiene").textContent = n.hygiene;
   document.getElementById("need-mood").textContent = n.mood;
-  document.getElementById("player-money").textContent =
-    gameState.player.money.toLocaleString("id-ID");
+  document.getElementById("player-money").textContent = gameState.player.money.toLocaleString("id-ID");
 }
 
 function setupMenuButtons() {
@@ -274,9 +244,9 @@ function setupMenuButtons() {
     gameState.player.type = "child";
     gameState.player.gender = "female";
     gameState.player.skinColor = "#fce2c4";
-    gameState.player.hairColor = "#2c1a0e";
+    gameState.player.hairColor = "#3b2a1a";
     gameState.player.hairStyle = "short";
-    gameState.player.clothesColor = "#ff8fab";
+    gameState.player.clothesColor = "#5d8a4e";
 
     document.getElementById("input-name").value = "";
     document.querySelectorAll("[data-type]").forEach(b => b.classList.remove("active"));
@@ -309,9 +279,7 @@ function setupMenuButtons() {
     showToast("Pengaturan masih dalam pengembangan");
   });
 
-  document.getElementById("btn-save").addEventListener("click", () => {
-    saveGame();
-  });
+  document.getElementById("btn-save").addEventListener("click", () => saveGame());
 
   document.getElementById("btn-menu").addEventListener("click", () => {
     if (confirm("Kembali ke Main Menu?\n(Progress otomatis disimpan)")) {
@@ -326,7 +294,7 @@ function startLoading() {
   setTimeout(() => {
     document.getElementById("loading-screen").classList.add("hidden");
     showScreen("main-menu");
-  }, 1200);
+  }, 1100);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
