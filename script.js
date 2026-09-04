@@ -1,8 +1,3 @@
-/**
- * KYARAEZ: Little World
- * Character Creator + Save/Load System
- */
-
 const SAVE_KEY = "kyaraez_save";
 
 const gameState = {
@@ -33,10 +28,6 @@ const gameState = {
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
 
-// ======================
-// Screen
-// ======================
-
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach(el => el.classList.add("hidden"));
   const target = document.getElementById(screenId);
@@ -45,10 +36,6 @@ function showScreen(screenId) {
     gameState.currentScreen = screenId;
   }
 }
-
-// ======================
-// Toast
-// ======================
 
 function showToast(message, duration = 2200) {
   const toast = document.getElementById("toast");
@@ -59,10 +46,6 @@ function showToast(message, duration = 2200) {
     toast.classList.add("hidden");
   }, duration);
 }
-
-// ======================
-// Save / Load
-// ======================
 
 function saveGame() {
   try {
@@ -87,7 +70,6 @@ function loadGame() {
     if (!raw) return false;
     const data = JSON.parse(raw);
     if (!data.player || !data.time) return false;
-
     gameState.player = { ...gameState.player, ...data.player };
     gameState.time = { ...gameState.time, ...data.time };
     gameState.weather = data.weather || "cerah";
@@ -100,10 +82,6 @@ function loadGame() {
 function hasSaveData() {
   return !!localStorage.getItem(SAVE_KEY);
 }
-
-// ======================
-// Character Creator
-// ======================
 
 function updateCharacterPreview() {
   const p = gameState.player;
@@ -212,10 +190,6 @@ function setupCharacterCreator() {
   });
 }
 
-// ======================
-// Game World
-// ======================
-
 function enterGameWorld() {
   showScreen("game-world");
   applyCharacterToWorld();
@@ -240,10 +214,6 @@ function applyCharacterToWorld() {
   if (hair) hair.style.background = p.hairColor;
   if (body) body.style.background = p.clothesColor;
 }
-
-// ======================
-// Time System
-// ======================
 
 let gameLoopInterval = null;
 
@@ -298,10 +268,6 @@ function updateHUD() {
     gameState.player.money.toLocaleString("id-ID");
 }
 
-// ======================
-// Menu
-// ======================
-
 function setupMenuButtons() {
   document.getElementById("btn-new-game").addEventListener("click", () => {
     gameState.player.name = "";
@@ -355,10 +321,6 @@ function setupMenuButtons() {
     }
   });
 }
-
-// ======================
-// Init
-// ======================
 
 function startLoading() {
   setTimeout(() => {
