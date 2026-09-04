@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KYARAEZ: Little World</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -36,7 +36,6 @@
   <div id="character-creator" class="screen hidden">
     <div class="creator-wrapper">
 
-      <!-- Preview Karakter -->
       <div class="creator-preview">
         <div class="character-preview" id="character-preview">
           <div class="char-hair" id="preview-hair"></div>
@@ -49,7 +48,6 @@
         <p class="preview-name" id="preview-name">Namamu</p>
       </div>
 
-      <!-- Panel Customize -->
       <div class="creator-panel">
         <h2>Buat Karaktermu</h2>
 
@@ -99,7 +97,7 @@
 
         <div class="form-group">
           <label>Gaya Rambut</label>
-          <div class="option-row" id="hair-styles">
+          <div class="option-row">
             <button class="option-btn active" data-hair="short">Pendek</button>
             <button class="option-btn" data-hair="long">Panjang</button>
             <button class="option-btn" data-hair="curly">Keriting</button>
@@ -175,9 +173,8 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
-  <script src="js/main.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
