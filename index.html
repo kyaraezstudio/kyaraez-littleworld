@@ -32,16 +32,102 @@
     </div>
   </div>
 
-  <!-- Character Creator (placeholder) -->
+  <!-- Character Creator -->
   <div id="character-creator" class="screen hidden">
-    <div class="creator-container">
-      <h2>Buat Karaktermu</h2>
-      <p class="placeholder-text">Character Creator akan muncul di sini</p>
-      <button id="btn-finish-creator" class="btn primary">Selesai</button>
+    <div class="creator-wrapper">
+
+      <!-- Preview Karakter -->
+      <div class="creator-preview">
+        <div class="character-preview" id="character-preview">
+          <div class="char-hair" id="preview-hair"></div>
+          <div class="char-face" id="preview-face">
+            <div class="char-eyes" id="preview-eyes"></div>
+            <div class="char-mouth"></div>
+          </div>
+          <div class="char-body" id="preview-body"></div>
+        </div>
+        <p class="preview-name" id="preview-name">Namamu</p>
+      </div>
+
+      <!-- Panel Customize -->
+      <div class="creator-panel">
+        <h2>Buat Karaktermu</h2>
+
+        <div class="form-group">
+          <label>Nama</label>
+          <input type="text" id="input-name" placeholder="Masukkan nama..." maxlength="16" />
+        </div>
+
+        <div class="form-group">
+          <label>Tipe Karakter</label>
+          <div class="option-row">
+            <button class="option-btn active" data-type="child">Anak / Teen</button>
+            <button class="option-btn" data-type="adult">Dewasa</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Gender</label>
+          <div class="option-row">
+            <button class="option-btn active" data-gender="female">Perempuan</button>
+            <button class="option-btn" data-gender="male">Laki-laki</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Warna Kulit</label>
+          <div class="color-row" id="skin-colors">
+            <button class="color-btn active" data-color="#fce2c4" style="background:#fce2c4"></button>
+            <button class="color-btn" data-color="#f5cba7" style="background:#f5cba7"></button>
+            <button class="color-btn" data-color="#e0ac69" style="background:#e0ac69"></button>
+            <button class="color-btn" data-color="#c68642" style="background:#c68642"></button>
+            <button class="color-btn" data-color="#8d5524" style="background:#8d5524"></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Warna Rambut</label>
+          <div class="color-row" id="hair-colors">
+            <button class="color-btn active" data-color="#2c1a0e" style="background:#2c1a0e"></button>
+            <button class="color-btn" data-color="#6b3a2a" style="background:#6b3a2a"></button>
+            <button class="color-btn" data-color="#d4a017" style="background:#d4a017"></button>
+            <button class="color-btn" data-color="#e8b4bc" style="background:#e8b4bc"></button>
+            <button class="color-btn" data-color="#4a90a4" style="background:#4a90a4"></button>
+            <button class="color-btn" data-color="#222222" style="background:#222222"></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Gaya Rambut</label>
+          <div class="option-row" id="hair-styles">
+            <button class="option-btn active" data-hair="short">Pendek</button>
+            <button class="option-btn" data-hair="long">Panjang</button>
+            <button class="option-btn" data-hair="curly">Keriting</button>
+            <button class="option-btn" data-hair="ponytail">Kuncir</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Warna Baju</label>
+          <div class="color-row" id="clothes-colors">
+            <button class="color-btn active" data-color="#ff8fab" style="background:#ff8fab"></button>
+            <button class="color-btn" data-color="#a0e7e5" style="background:#a0e7e5"></button>
+            <button class="color-btn" data-color="#b5e48c" style="background:#b5e48c"></button>
+            <button class="color-btn" data-color="#ffd6a5" style="background:#ffd6a5"></button>
+            <button class="color-btn" data-color="#c77dff" style="background:#c77dff"></button>
+            <button class="color-btn" data-color="#48cae4" style="background:#48cae4"></button>
+          </div>
+        </div>
+
+        <div class="creator-actions">
+          <button id="btn-cancel-creator" class="btn secondary">Batal</button>
+          <button id="btn-finish-creator" class="btn primary">Selesai & Main</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Game World (placeholder) -->
+  <!-- Game World -->
   <div id="game-world" class="screen hidden">
     <div class="hud">
       <div class="hud-left">
@@ -68,16 +154,30 @@
         <div class="money-display">
           💰 <span id="player-money">1.250</span>
         </div>
-        <button id="btn-menu" class="btn-icon">☰</button>
+        <button id="btn-save" class="btn-icon" title="Simpan Game">💾</button>
+        <button id="btn-menu" class="btn-icon" title="Menu">☰</button>
       </div>
     </div>
 
     <div id="world-container">
-      <p class="placeholder-text">World / Rumah akan muncul di sini</p>
+      <div class="world-placeholder">
+        <div class="mini-character" id="world-character">
+          <div class="char-hair"></div>
+          <div class="char-face">
+            <div class="char-eyes"></div>
+            <div class="char-mouth"></div>
+          </div>
+          <div class="char-body"></div>
+        </div>
+        <p id="world-greeting">Selamat datang di Little World!</p>
+        <p class="hint">Tekan 💾 untuk menyimpan progress</p>
+      </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
   <script src="js/main.js"></script>
 </body>
 </html>
