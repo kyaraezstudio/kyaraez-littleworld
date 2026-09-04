@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Loading Screen -->
+  <!-- Loading -->
   <div id="loading-screen">
     <div class="loading-content">
       <h1>KYARAEZ</h1>
@@ -22,7 +22,6 @@
     <div class="menu-container">
       <h1 class="game-title">KYARAEZ</h1>
       <p class="game-subtitle">Little World</p>
-
       <div class="menu-buttons">
         <button id="btn-new-game" class="btn primary">Mulai Baru</button>
         <button id="btn-continue" class="btn">Lanjutkan</button>
@@ -35,15 +34,19 @@
   <!-- Character Creator -->
   <div id="character-creator" class="screen hidden">
     <div class="creator-wrapper">
-
       <div class="creator-preview">
-        <div class="character-preview" id="character-preview">
-          <div class="char-hair" id="preview-hair"></div>
-          <div class="char-face" id="preview-face">
-            <div class="char-eyes" id="preview-eyes"></div>
-            <div class="char-mouth"></div>
+        <div class="chibi" id="preview-chibi">
+          <div class="chibi-hair" id="p-hair"></div>
+          <div class="chibi-head" id="p-head">
+            <div class="chibi-eye left"></div>
+            <div class="chibi-eye right"></div>
+            <div class="chibi-blush left"></div>
+            <div class="chibi-blush right"></div>
+            <div class="chibi-mouth"></div>
           </div>
-          <div class="char-body" id="preview-body"></div>
+          <div class="chibi-body" id="p-body"></div>
+          <div class="chibi-leg left"></div>
+          <div class="chibi-leg right"></div>
         </div>
         <p class="preview-name" id="preview-name">Namamu</p>
       </div>
@@ -57,7 +60,7 @@
         </div>
 
         <div class="form-group">
-          <label>Tipe Karakter</label>
+          <label>Tipe</label>
           <div class="option-row">
             <button class="option-btn active" data-type="child">Anak / Teen</button>
             <button class="option-btn" data-type="adult">Dewasa</button>
@@ -86,12 +89,12 @@
         <div class="form-group">
           <label>Warna Rambut</label>
           <div class="color-row" id="hair-colors">
-            <button class="color-btn active" data-color="#2c1a0e" style="background:#2c1a0e"></button>
+            <button class="color-btn active" data-color="#3b2a1a" style="background:#3b2a1a"></button>
             <button class="color-btn" data-color="#6b3a2a" style="background:#6b3a2a"></button>
             <button class="color-btn" data-color="#d4a017" style="background:#d4a017"></button>
-            <button class="color-btn" data-color="#e8b4bc" style="background:#e8b4bc"></button>
-            <button class="color-btn" data-color="#4a90a4" style="background:#4a90a4"></button>
-            <button class="color-btn" data-color="#222222" style="background:#222222"></button>
+            <button class="color-btn" data-color="#2f4f2f" style="background:#2f4f2f"></button>
+            <button class="color-btn" data-color="#4a3728" style="background:#4a3728"></button>
+            <button class="color-btn" data-color="#1a1a1a" style="background:#1a1a1a"></button>
           </div>
         </div>
 
@@ -108,12 +111,12 @@
         <div class="form-group">
           <label>Warna Baju</label>
           <div class="color-row" id="clothes-colors">
-            <button class="color-btn active" data-color="#ff8fab" style="background:#ff8fab"></button>
-            <button class="color-btn" data-color="#a0e7e5" style="background:#a0e7e5"></button>
-            <button class="color-btn" data-color="#b5e48c" style="background:#b5e48c"></button>
-            <button class="color-btn" data-color="#ffd6a5" style="background:#ffd6a5"></button>
-            <button class="color-btn" data-color="#c77dff" style="background:#c77dff"></button>
-            <button class="color-btn" data-color="#48cae4" style="background:#48cae4"></button>
+            <button class="color-btn active" data-color="#5d8a4e" style="background:#5d8a4e"></button>
+            <button class="color-btn" data-color="#8b5e3c" style="background:#8b5e3c"></button>
+            <button class="color-btn" data-color="#c4a484" style="background:#c4a484"></button>
+            <button class="color-btn" data-color="#7a9e7e" style="background:#7a9e7e"></button>
+            <button class="color-btn" data-color="#a67c52" style="background:#a67c52"></button>
+            <button class="color-btn" data-color="#4a7043" style="background:#4a7043"></button>
           </div>
         </div>
 
@@ -138,43 +141,53 @@
           <span id="weather-text">Cerah</span>
         </div>
       </div>
-
       <div class="hud-center">
         <div class="needs">
-          <div class="need" title="Energi">⚡ <span id="need-energy">100</span></div>
-          <div class="need" title="Lapar">🍞 <span id="need-hunger">100</span></div>
-          <div class="need" title="Kebersihan">🛁 <span id="need-hygiene">100</span></div>
-          <div class="need" title="Mood">😊 <span id="need-mood">100</span></div>
+          <div class="need">⚡ <span id="need-energy">100</span></div>
+          <div class="need">🍞 <span id="need-hunger">100</span></div>
+          <div class="need">🛁 <span id="need-hygiene">100</span></div>
+          <div class="need">😊 <span id="need-mood">100</span></div>
         </div>
       </div>
-
       <div class="hud-right">
-        <div class="money-display">
-          💰 <span id="player-money">1.250</span>
-        </div>
-        <button id="btn-save" class="btn-icon" title="Simpan Game">💾</button>
-        <button id="btn-menu" class="btn-icon" title="Menu">☰</button>
+        <div class="money-display">💰 <span id="player-money">1.250</span></div>
+        <button id="btn-save" class="btn-icon">💾</button>
+        <button id="btn-menu" class="btn-icon">☰</button>
       </div>
     </div>
 
+    <!-- Simple Room -->
     <div id="world-container">
-      <div class="world-placeholder">
-        <div class="mini-character" id="world-character">
-          <div class="char-hair"></div>
-          <div class="char-face">
-            <div class="char-eyes"></div>
-            <div class="char-mouth"></div>
+      <div class="room">
+        <div class="room-wall"></div>
+        <div class="room-floor"></div>
+
+        <!-- Furniture sederhana -->
+        <div class="furn bed"></div>
+        <div class="furn window"></div>
+        <div class="furn plant"></div>
+
+        <!-- Karakter di kamar -->
+        <div class="chibi in-room" id="world-chibi">
+          <div class="chibi-hair" id="w-hair"></div>
+          <div class="chibi-head" id="w-head">
+            <div class="chibi-eye left"></div>
+            <div class="chibi-eye right"></div>
+            <div class="chibi-blush left"></div>
+            <div class="chibi-blush right"></div>
+            <div class="chibi-mouth"></div>
           </div>
-          <div class="char-body"></div>
+          <div class="chibi-body" id="w-body"></div>
+          <div class="chibi-leg left"></div>
+          <div class="chibi-leg right"></div>
         </div>
-        <p id="world-greeting">Selamat datang di Little World!</p>
-        <p class="hint">Tekan 💾 untuk menyimpan progress</p>
+
+        <div class="room-label" id="world-greeting">Kamar Tidur</div>
       </div>
     </div>
   </div>
 
   <div id="toast" class="toast hidden"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
