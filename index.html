@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <div id="loading-screen">
     <div class="loading-content">
       <h1>KYARAEZ</h1>
@@ -16,7 +15,6 @@
     </div>
   </div>
 
-  <!-- MAIN MENU -->
   <div id="main-menu" class="screen hidden">
     <div class="menu-container">
       <h1 class="game-title">KYARAEZ</h1>
@@ -30,31 +28,20 @@
     </div>
   </div>
 
-  <!-- CHARACTER CREATOR -->
   <div id="character-creator" class="screen hidden">
     <div class="creator-card">
       <div class="creator-left">
-        <img id="avatar-preview" class="avatar-big" src="" alt="avatar" />
+        <img id="avatar-preview" class="avatar-big" alt="avatar" />
         <p id="preview-name" class="preview-name">Namamu</p>
       </div>
       <div class="creator-right">
         <h2>Buat Karakter</h2>
-
         <div class="form-group">
           <label>Nama</label>
-          <input type="text" id="input-name" maxlength="16" placeholder="Ketik nama..." />
+          <input id="input-name" type="text" maxlength="16" placeholder="Ketik nama..." />
         </div>
-
         <div class="form-group">
-          <label>Tipe</label>
-          <div class="option-row">
-            <button class="option-btn active" data-type="child">Anak / Teen</button>
-            <button class="option-btn" data-type="adult">Dewasa</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Style Avatar</label>
+          <label>Style</label>
           <div class="option-row">
             <button class="option-btn active" data-style="adventurer">Adventurer</button>
             <button class="option-btn" data-style="lorelei">Lorelei</button>
@@ -62,71 +49,79 @@
             <button class="option-btn" data-style="big-smile">Big Smile</button>
           </div>
         </div>
-
         <div class="form-group">
-          <label>Seed (ubah wajah)</label>
+          <label>Seed wajah</label>
           <div class="seed-row">
-            <input type="text" id="input-seed" placeholder="bebas, contoh: kyara" />
+            <input id="input-seed" type="text" placeholder="kyara" />
             <button id="btn-random-seed" class="btn small">Random</button>
           </div>
         </div>
-
         <div class="creator-actions">
           <button id="btn-cancel-creator" class="btn secondary">Batal</button>
-          <button id="btn-finish-creator" class="btn primary">Selesai & Main</button>
+          <button id="btn-finish-creator" class="btn primary">Masuk Dunia</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- GAME -->
   <div id="game-world" class="screen hidden">
     <div class="hud">
       <div class="hud-left">
         <div class="time-box">
-          <span id="game-time">07:30</span>
+          <strong id="game-time">07:30</strong>
           <span id="game-day">Senin</span>
         </div>
-        <div class="weather-box">
-          <span id="weather-icon">☀️</span>
-          <span id="weather-text">Cerah</span>
-        </div>
+        <div id="weather-box">☀️ Cerah</div>
       </div>
-
       <div class="hud-center">
-        <div class="need-item">⚡ <span id="need-energy">100</span></div>
-        <div class="need-item">🍞 <span id="need-hunger">100</span></div>
-        <div class="need-item">🛁 <span id="need-hygiene">100</span></div>
-        <div class="need-item">😊 <span id="need-mood">100</span></div>
+        <div class="need">⚡<span id="need-energy">100</span></div>
+        <div class="need">🍞<span id="need-hunger">100</span></div>
+        <div class="need">🛁<span id="need-hygiene">100</span></div>
+        <div class="need">😊<span id="need-mood">100</span></div>
       </div>
-
       <div class="hud-right">
-        <div class="money-box">💰 <span id="player-money">1250</span></div>
-        <button id="btn-save" class="btn-icon">💾</button>
-        <button id="btn-menu" class="btn-icon">☰</button>
+        <div class="money">💰 <span id="player-money">1250</span></div>
+        <button id="btn-save" class="btn-icon" title="Save">💾</button>
+        <button id="btn-menu" class="btn-icon" title="Menu">☰</button>
       </div>
     </div>
 
-    <div class="game-body">
-      <div class="location-tabs">
-        <button class="loc-btn active" data-loc="home">🏠 Rumah</button>
-        <button class="loc-btn" data-loc="cafe">☕ Cafe</button>
-        <button class="loc-btn" data-loc="market">🛒 Supermarket</button>
-        <button class="loc-btn" data-loc="work">💼 Kerja</button>
-      </div>
+    <div class="map-bar">
+      <button class="map-btn active" data-loc="home">🏠 Rumah</button>
+      <button class="map-btn" data-loc="cafe">☕ Cafe</button>
+      <button class="map-btn" data-loc="market">🛒 Market</button>
+      <button class="map-btn" data-loc="work">💼 Kerja</button>
+    </div>
 
-      <div class="scene">
-        <div class="scene-left">
-          <img id="player-avatar" class="avatar-mid" src="" alt="player" />
-          <p id="player-label" class="player-label">Player</p>
-          <p id="location-desc" class="location-desc">Kamu di rumah.</p>
-        </div>
+    <div class="stage-wrap">
+      <div id="stage" class="stage loc-home">
+        <div class="stage-bg"></div>
 
-        <div class="scene-right">
-          <h3 id="location-title">Rumah</h3>
-          <div id="action-list" class="action-list"></div>
+        <!-- HOME objects -->
+        <button class="obj bed" data-act="sleep" title="Kasur">🛏️<br><span>Tidur</span></button>
+        <button class="obj bath" data-act="bath" title="Kamar mandi">🚿<br><span>Mandi</span></button>
+        <button class="obj fridge" data-act="eat" title="Kulkas">🧊<br><span>Makan</span></button>
+
+        <!-- CAFE objects -->
+        <button class="obj coffee" data-act="coffee" title="Beli kopi">☕<br><span>Kopi 80</span></button>
+        <button class="obj cake" data-act="cake" title="Beli cake">🍰<br><span>Cake 120</span></button>
+        <button class="obj seat" data-act="relax" title="Duduk">🪑<br><span>Santai</span></button>
+
+        <!-- MARKET objects -->
+        <button class="obj snack" data-act="snack" title="Snack">🍪<br><span>Snack 60</span></button>
+        <button class="obj meal" data-act="meal" title="Makanan">🍱<br><span>Meal 150</span></button>
+        <button class="obj soap" data-act="soap" title="Sabun">🧼<br><span>Sabun 90</span></button>
+
+        <!-- WORK objects -->
+        <button class="obj desk" data-act="work" title="Meja kerja">💻<br><span>Kerja +200</span></button>
+
+        <div class="player-token">
+          <img id="player-avatar" alt="player" />
+          <div id="player-name" class="player-name">Player</div>
+          <div id="speech" class="speech hidden"></div>
         </div>
       </div>
+      <p id="stage-hint" class="stage-hint">Klik objek di ruangan untuk melakukan aksi</p>
     </div>
   </div>
 
